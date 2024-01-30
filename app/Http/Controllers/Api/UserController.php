@@ -15,7 +15,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|unique:users',
-            'password' => 'required|string|min6'
+            'password' => 'required|string|min:6'
         ] ,
         [
             'name.required' => 'Name alanını doldurmak zorundasın.',
@@ -29,13 +29,15 @@ class UserController extends Controller
             'password.min'=> 'Şifre en az 6 karakterden olusmalıdır'
         ]);
 
+
+
         $data = User::create( [
             'name' => $requestData['name'],
             'email' => $requestData['email'],
             'password' => Hash::make($requestData['password']) //şifremizi şifreliyorz
         ]);
 
-        return apiResponse('Message',200,$data);
+        return apiResponse('Controller message',200,$data);
     }
 
     public function login() {
