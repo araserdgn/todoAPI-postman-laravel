@@ -8,6 +8,10 @@ if(!function_exists('apiResponse')) {
     }
 }
 
+
+//! Helper içine açtık bu fonk. cunku sürekli kullanacağız , eger controller
+//! içine açsaydık her controller için tekrar tekrar yazmak gerekblirdi
+
 //  helperi app içerisinde tanımladık fakat bunun calısması için
 // composer.json içerisindeki autoload içerisine
 //    "files": [

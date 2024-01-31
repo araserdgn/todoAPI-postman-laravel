@@ -37,15 +37,28 @@ class UserController extends Controller
             'password' => Hash::make($requestData['password']) //şifremizi şifreliyorz
         ]);
 
-        return apiResponse('Controller message',200,$data);
+        return apiResponse(__('Kayıt olusturuldu.'),200,$data);
+        // Dillerde çeviri desteği sağlar
     }
 
-    public function login() {
-        $data = [
-            'test',
-            'tss'
-        ];
+    public function login(Request $request) {
+        $this->validate($request,[
+            'email' => 'required|string|email',
+            'password' => 'required|string|min:6'
+        ], [
+            'email.required' => 'Email alanı boş olamaz.',
+            'email.email' => 'Email formatına uygun değil.',
+            'password.required'=>'Şifre alanı boş bırakılamaz.',
+            'password.min'=>'Şifre alanı minimum 6 karakter olmalıdır.'
+        ]);
 
-        return apiResponse('Test',200,$data);
+        if(auth()->attempt(['email'=>$request->email, 'password' => $request->password])) {
+            $user = auth()->user();
+            $token = $user->createToken('api_case')->accessToken;
+            $token_text = $user->createToken('api_case')->plainTextToken;
+            return apiResponse(__('Success Login'),200, ['token_text' =>$token_text,'token' =>$token,'user' =>$user]);
+        }
+
+        return apiResponse(__('UNAUTHORIZED'),401);
     }
 }
