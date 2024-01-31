@@ -30,4 +30,8 @@ Route::prefix('auth')->group(function() {
 //!
 Route::prefix('todo')->middleware('auth:api')->group(function() {
     Route::get('/list',[TodoController::class, 'index']);
+    Route::post('/store',[TodoController::class, 'store']);
+    Route::post('/{id}/edit',[TodoController::class, 'edit']);
+
+    Route::post('/{id}/update',[TodoController::class, 'update']); // PUT güncellemelerde kullanılır
 }) ;

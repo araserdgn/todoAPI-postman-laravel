@@ -21,6 +21,20 @@ class TodoRepository {
     public function find($id) {
         return $this->model->where('id',$id)->first();
     }
+
+    public function store($data) {
+        return $this->model->create( [
+            'name' =>$data['name'],
+            'completed' =>$data['completed'],
+        ]);
+    }
+
+    public function update($id,$data) {
+        return $this->model->where('id',$id)->update( [
+            'name' =>$data['name'],
+            'completed' =>$data['completed'],
+        ]);
+    }
 }
 
 // Burda da servisten alınanlar kullanılıyor, işlemler burada oluyor

@@ -22,6 +22,15 @@ class TodoService {
         return $this->todoRepository->find($id);
     }
 
+    public function store($data) {
+        return $this->todoRepository->store($data);
+
+    }
+    public function update($id,$data) {
+        return $this->todoRepository->update($id,$data);
+
+    }
+
 
 }
 
