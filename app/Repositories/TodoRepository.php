@@ -35,6 +35,10 @@ class TodoRepository {
             'completed' =>$data['completed'],
         ]);
     }
+
+    public function delete($id) {
+        return $this->model->where('id',$id)->delete($id);
+    }
 }
 
 // Burda da servisten alınanlar kullanılıyor, işlemler burada oluyor

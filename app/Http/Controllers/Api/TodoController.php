@@ -8,6 +8,8 @@ use App\Services\TodoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+
+
 class TodoController extends Controller
 {
     protected $todoService;
@@ -19,7 +21,7 @@ class TodoController extends Controller
 
     public function index(Request $request) {
         $todos = TodoResource::collection($this->todoService->getAll());
-        return apiResponse(__('Todo'),200, $todos);
+        return apiResponse(__('Todo API Resource'),200, $todos);
     }
 
     public function store(Request $request) {
@@ -59,9 +61,18 @@ class TodoController extends Controller
     }
 
 
+    public function delete($id) {
+        $this->todoService->delete($id);
+        return apiResponse(__('Todo Silme'),200);
+
+    }
+
+
 
     public function edit($id,Request $request) {
         return $this->todoService->find($id);
         return "TODO tek veri";
     }
+
+
 }

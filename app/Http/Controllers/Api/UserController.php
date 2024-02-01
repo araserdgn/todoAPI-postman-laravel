@@ -3,54 +3,42 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function register(Request $request) {
-        $requestData=$request->all();
+    protected $userService;
 
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|unique:users',
-            'password' => 'required|string|min:6'
-        ] ,
-        [
-            'name.required' => 'Name alanını doldurmak zorundasın.',
-            'name.string' => 'Text tipini string yapmalısın',
-            'name.max' => 'Max 255 karakterde olmalıdır.',
-            'email.required' => 'Email alanını doldurmak zorundasınız.',
-            'email.string' => 'Email alanı tip string olmalıdır.',
-            'email.unique' => 'Email zaten kayıtlıdır.',
-            'email.email' => 'Geçersiz email türü.',
-            'password.required' => 'Şifre alanı boş bırakılamaz',
-            'password.min'=> 'Şifre en az 6 karakterden olusmalıdır'
-        ]);
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    public function register(RegisterRequest $request) {
+        $data=$request->all();
 
 
+        $user = $this->userService->register($data); //! Service ile olan yapı
 
-        $data = User::create( [
-            'name' => $requestData['name'],
-            'email' => $requestData['email'],
-            'password' => Hash::make($requestData['password']) //şifremizi şifreliyorz
-        ]);
+        // $data = User::create( [ //! controler ile olan yöntem budur
+        //     'name' => $requestData['name'],
+        //     'email' => $requestData['email'],
+        //     'password' => Hash::make($requestData['password']) //şifremizi şifreliyorz
+        // ]);
 
-        return apiResponse(__('Kayıt olusturuldu.'),200,$data);
+        return apiResponse(__('Kayıt olusturuldu.'),200,['user' => $user]);
         // Dillerde çeviri desteği sağlar
     }
 
-    public function login(Request $request) {
-        $this->validate($request,[
-            'email' => 'required|string|email',
-            'password' => 'required|string|min:6'
-        ], [
-            'email.required' => 'Email alanı boş olamaz.',
-            'email.email' => 'Email formatına uygun değil.',
-            'password.required'=>'Şifre alanı boş bırakılamaz.',
-            'password.min'=>'Şifre alanı minimum 6 karakter olmalıdır.'
-        ]);
+    public function login(LoginRequest $request) {
+
+        $user = $this->userService->login($request->only(['email','password']));
 
         if(auth()->attempt(['email'=>$request->email, 'password' => $request->password])) {
             $user = auth()->user();
@@ -61,4 +49,22 @@ class UserController extends Controller
 
         return apiResponse(__('UNAUTHORIZED'),401);
     }
+
+
+    public function logout(Request $request) {
+        return Auth::guard('api')->user();
+        if(Auth::guard('api')->check()) {
+            Auth::guard('api')->user()->token()->revoke();
+            return apiResponse(__('Başarıyla çıkıs yaptın'),200,['user' => auth()->user()]);
+        }
+        else {
+            return apiResponse(__('Çıkıs yapıldı',401));
+        }
+
+    }
+
+    public function myProfil() {
+        return Auth::guard('api')->user();
+    }
+
 }

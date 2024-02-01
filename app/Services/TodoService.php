@@ -31,6 +31,10 @@ class TodoService {
 
     }
 
+    public function delete($id) {
+        return $this->todoRepository->delete($id);
+    }
+
 
 }
 
