@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository {
@@ -36,11 +37,11 @@ class UserRepository {
         }
 
         public function find($userId) {
-
+            return $this->model->find($userId);
         }
 
         public function user() {
-
+            return auth()->guard('api')->user();
         }
 
         public function updateUserImage($userId, $image) {

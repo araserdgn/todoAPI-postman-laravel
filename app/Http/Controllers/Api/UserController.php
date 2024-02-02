@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Services\UserService;
@@ -63,8 +64,21 @@ class UserController extends Controller
 
     }
 
-    public function myProfil() {
-        return Auth::guard('api')->user();
+    public function myProfil(Request $request) {
+        // return Auth::guard('api')->user();
+        return $user = $this->userService->user();
     }
 
+    public function updateUserImage(Request $request) {
+        $user = $this->userService->updateUserImage(auth()->user()->id, $request->file('image'));
+
+        if($user) {
+            return apiResponse(__('Updated Image'),200, ['user' => new UserResource($user)]);
+        }
+
+        return apiResponse(__('Information is ıncorrect',400));
+    }
+
+
 }
+

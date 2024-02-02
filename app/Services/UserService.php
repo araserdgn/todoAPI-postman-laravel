@@ -20,8 +20,8 @@ class UserService {
         return $this->userRepository->login($data);
     }
 
-    public function user($userId) {
-        return $this->userRepository->user($userId);
+    public function user() {
+        return $this->userRepository->user();
     }
 
     public function updateUserImage($userId,$image) {

@@ -20,7 +20,7 @@ class TodoController extends Controller
     }
 
     public function index(Request $request) {
-        $todos = TodoResource::collection($this->todoService->getAll());
+        $todos = TodoResource::collection($this->todoService->getAll()); //! API Resource
         return apiResponse(__('Todo API Resource'),200, $todos);
     }
 
